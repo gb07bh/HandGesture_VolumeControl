@@ -14,11 +14,6 @@ interface = devices.Activate(
     IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
 volume = cast(interface, POINTER(IAudioEndpointVolume))
 
-#volume.GetMute()
-#volume.GetMasterVolumeLevel()
-
-
-
 cam = cv2.VideoCapture(0)
 mpHands = mp.solutions.hands
 hands = mpHands.Hands()
@@ -33,31 +28,27 @@ while True:
         for handLms in results.multi_hand_landmarks:
             lmList = []
             for id, lm in enumerate(handLms.landmark):
-                # print(id,lm). But we need pixel values
+               
                 h , w, c = img.shape
                 cx , cy =  int(lm.x*w) ,int(lm.y*h)
-                # print(id , cx, cy) . printing the pixel values
-                # Adding these values in list
                 lmList.append([id, cx, cy])
-                # Conversion of pixel over. type casting into int so doesn't look sloppy
-                #Try printing lmList . It gives us a list of lists
             mpDraw.draw_landmarks(img,handLms, mpHands.HAND_CONNECTIONS)
         
         if lmList:
-            # print(lmList[4], lmlist[8])
+            
             x1 ,x2 = lmList[4][1], lmList[4][2]
             y1, y2 = lmList[8][1], lmList[8][2]
-            ## z1, z2 = lmList[12][1], lmList[12][2] # Connecting middle finger
+     
             # Making marks on tips of thumb and index fingers
             cv2.circle(img, (x1,x2), 10, (0,0,255), cv2.FILLED)
             cv2.circle(img, (y1,y2), 10, (0,0,255), cv2.FILLED)
-            # cv2.circle(img, (z1,z2), 10, (0,155,100), cv2.FILLED)
+           
 
             cv2.line(img, (x1,x2),(y1,y2),(128,0,0),3)
-            # cv2.line(img, (y1,y2),(z1,z2),(155,20,144),3)
+           
             # To calculate lenth of line we will use math function .hypot
             len = math.hypot(y1- x1, y2-x2)
-            # print(len)  # Length varies with distance from the camera as wel
+            # print(len)  # Length varies with distance from the camera as well
             if len < 50:
                 a1 = (x1+y1)//2
                 a2 = (x2+y2)//2
@@ -89,4 +80,3 @@ while True:
     if cv2.waitKey(1) == ord('a'):
         sys.exit()
 
-# len == 20 to 165
